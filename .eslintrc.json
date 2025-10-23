@@ -1,0 +1,18 @@
+{
+    "env": {
+        "browser": true,
+        "es2016": true
+    },
+    "extends": ["eslint:recommended", "plugin:prettier/recommended", "plugin:playwright/recommended"],
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "rules": {
+        "import/no-extraneous-dependencies": "off",
+        "no-undef": "off",
+        "playwright/no-standalone-expect": "off",
+        "playwright/no-conditional-in-test": "off",
+        "playwright/expect-expect": "off"
+    }
+}
