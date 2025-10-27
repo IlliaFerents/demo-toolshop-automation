@@ -24,6 +24,13 @@ class LoginPage {
     async loginUI(email, password) {
         await this.emailInput.fill(email);
         await this.passwordInput.fill(password);
+        await this.clickLogin();
+    }
+
+    /**
+     * Clicks the login button
+     */
+    async clickLogin() {
         await this.loginButton.click();
     }
 }
