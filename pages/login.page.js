@@ -1,3 +1,5 @@
+import { expect } from "@playwright/test";
+
 /**
  * @class LoginPage
  */
@@ -14,6 +16,14 @@ class LoginPage {
         this.loginButton = page.getByTestId("login-submit");
         this.registerAccountLink = page.getByTestId("register-link");
         this.forgotPasswordLink = page.getByTestId("forgot-password-link");
+    }
+
+    /**
+     * Navigates to login page
+     */
+    async goToLogin() {
+        await this.page.goto("/auth/login");
+        expect(this.page.url()).toContain("/auth/login");
     }
 
     /**
