@@ -25,11 +25,11 @@ class RegistrationPage {
     /**
      * Fills in the registration form with user details
      * @param {Object} userData
-     * @param {string} userData.firstName
-     * @param {string} userData.lastName
+     * @param {string} userData.first_name
+     * @param {string} userData.last_name
      * @param {string} userData.dob
      * @param {string} userData.street
-     * @param {string} userData.postalCode
+     * @param {string} userData.postal_code
      * @param {string} userData.city
      * @param {string} userData.state
      * @param {string} userData.country
@@ -38,11 +38,11 @@ class RegistrationPage {
      * @param {string} userData.password
      */
     async fillRegistrationForm(userData) {
-        await this.firstNameInput.fill(userData.firstName);
-        await this.lastNameInput.fill(userData.lastName);
+        await this.firstNameInput.fill(userData.first_name);
+        await this.lastNameInput.fill(userData.last_name);
         await this.dobInput.fill(userData.dob);
         await this.streetInput.fill(userData.street);
-        await this.postalCodeInput.fill(userData.postalCode);
+        await this.postalCodeInput.fill(userData.postal_code);
         await this.cityInput.fill(userData.city);
         await this.stateInput.fill(userData.state);
         await this.countryDropdown.selectOption(userData.country);
