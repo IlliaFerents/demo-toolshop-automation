@@ -7,3 +7,6 @@ node_modules/
 #Playwright test reports
 test-results/
 playwright-report/
+
+# Environment variables
+.env
