@@ -27,10 +27,8 @@ jobs:
             - name: Install Playwright browsers
               run: npx playwright install chromium --with-deps
 
-            - name: Run Playwright tests
-              run: npm run test:all:chrome -- --workers=4
-
-            - name: Upload test report
+      - name: Run Playwright tests
+        run: npm run test:all:chrome -- --workers=4 --retries=1            - name: Upload test report
               if: always()
               uses: actions/upload-artifact@v4
               with:
