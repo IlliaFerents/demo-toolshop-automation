@@ -1,9 +1,6 @@
 # Node modules
 node_modules/
 
-# GitHub workflows/configs
-.github/
-
 #Playwright test reports
 test-results/
 playwright-report/
