@@ -1,7 +1,7 @@
 {
     "scripts": {
         "prepare": "husky",
-        "test:all:chrome": "playwright test --project=chromium"
+        "test:all:chrome": "playwright test --project=chromium --workers=4 --retries=1"
     },
     "devDependencies": {
         "@faker-js/faker": "^10.1.0",
