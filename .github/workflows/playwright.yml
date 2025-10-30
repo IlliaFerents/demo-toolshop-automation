@@ -5,8 +5,13 @@ on:
         branches:
             - main
 
+
+
+
 jobs:
     test:
+        permissions:
+            contents: write
         name: Run Playwright Tests
         runs-on: ubuntu-latest
         timeout-minutes: 60
@@ -37,3 +42,11 @@ jobs:
                   name: playwright-report
                   path: playwright-report/
                   retention-days: 10
+
+            - name: Deploy report to GitHub Pages
+              if: always()
+              uses: peaceiris/actions-gh-pages@v4
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: ./playwright-report
+                  destination_dir: reports/latest
