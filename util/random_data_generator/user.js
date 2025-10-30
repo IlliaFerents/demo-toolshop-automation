@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker";
+import { COUNTRY_CODES } from "../constants/countries.js";
 
 /**
  * Generates a valid password matching the schema requirements
@@ -35,7 +36,7 @@ export function generateUserSignUpData() {
         street: faker.location.streetAddress(),
         city: faker.location.city(),
         state: faker.location.state(),
-        country: faker.location.country(),
+        country: faker.helpers.arrayElement(COUNTRY_CODES),
         postal_code: faker.location.zipCode(),
         phone: faker.string.numeric({ length: 10 }),
         dob: faker.date.birthdate({ min: 18, max: 65, mode: "age" }).toISOString().split("T")[0],
