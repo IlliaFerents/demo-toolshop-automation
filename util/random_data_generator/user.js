@@ -44,3 +44,15 @@ export function generateUserSignUpData() {
         email: `${first_name.toLowerCase()}.${last_name.toLowerCase()}@${faker.internet.domainName()}`
     };
 }
+
+/**
+ * Generates a random message between 50 to 100 characters
+ * @returns {string} A random message with 50-100 characters
+ */
+export function generateMessage() {
+    let message = "";
+    while (message.length < 50) {
+        message += faker.lorem.sentence();
+    }
+    return message.substring(0, 100);
+}
