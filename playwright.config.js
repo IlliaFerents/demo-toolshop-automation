@@ -25,6 +25,13 @@ export default defineConfig({
 
         // Collect trace when retrying the failed test.
         trace: "on-first-retry",
+
+        // Capture video on failure
+        video: "retain-on-failure",
+
+        // Capture screenshot on failure
+        screenshot: "only-on-failure",
+
         testIdAttribute: "data-test"
     },
     // Configure projects for major browsers.
