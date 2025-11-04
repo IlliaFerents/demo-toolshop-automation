@@ -9,45 +9,23 @@ const fs = require("fs");
 const path = require("path");
 
 const MAX_REPORTS = 15;
-const REPORT_DATA_PATH = process.argv[2] || "playwright-report/data.json";
+const REPORT_DIR = process.argv[2] || "playwright-report";
 const OUTPUT_DIR = process.argv[3] || "deploy";
+const REPORT_JSON = path.join(REPORT_DIR, "results.json");
 const RUN_NUMBER = process.env.GITHUB_RUN_NUMBER || Date.now().toString();
 const RUN_ID = process.env.GITHUB_RUN_ID || "local";
-const REPO = process.env.GITHUB_REPOSITORY || "demo-toolshop-automation";
 const SHA = process.env.GITHUB_SHA ? process.env.GITHUB_SHA.substring(0, 7) : "unknown";
 
 function extractStats(reportData) {
     const stats = reportData.stats || {};
-    const suites = reportData.suites || [];
 
-    // Calculate totals
+    // Calculate totals from stats
     const total = stats.expected || 0;
     const passed = (stats.expected || 0) - (stats.unexpected || 0) - (stats.flaky || 0);
     const failed = stats.unexpected || 0;
     const flaky = stats.flaky || 0;
     const skipped = stats.skipped || 0;
-
-    // Calculate duration
-    let duration = 0;
-    function sumDuration(suite) {
-        if (suite.specs) {
-            suite.specs.forEach((spec) => {
-                if (spec.tests) {
-                    spec.tests.forEach((test) => {
-                        if (test.results) {
-                            test.results.forEach((result) => {
-                                duration += result.duration || 0;
-                            });
-                        }
-                    });
-                }
-            });
-        }
-        if (suite.suites) {
-            suite.suites.forEach(sumDuration);
-        }
-    }
-    suites.forEach(sumDuration);
+    const duration = Math.round((stats.duration || 0) / 1000); // Convert ms to seconds
 
     return {
         total,
@@ -55,7 +33,7 @@ function extractStats(reportData) {
         failed,
         flaky,
         skipped,
-        duration: Math.round(duration / 1000), // Convert to seconds
+        duration,
         passRate: total > 0 ? Math.round((passed / total) * 100) : 0
     };
 }
@@ -74,12 +52,21 @@ function loadExistingManifest() {
 
 function main() {
     // Read Playwright report data
-    if (!fs.existsSync(REPORT_DATA_PATH)) {
-        console.error(`Report data not found at ${REPORT_DATA_PATH}`);
-        process.exit(1);
+    if (!fs.existsSync(REPORT_JSON)) {
+        console.warn(`Report not found at ${REPORT_JSON}. Creating placeholder manifest.`);
+        createPlaceholderManifest();
+        return;
     }
 
-    const reportData = JSON.parse(fs.readFileSync(REPORT_DATA_PATH, "utf8"));
+    let reportData;
+    try {
+        reportData = JSON.parse(fs.readFileSync(REPORT_JSON, "utf8"));
+    } catch (e) {
+        console.warn(`Failed to parse report: ${e.message}. Creating placeholder manifest.`);
+        createPlaceholderManifest();
+        return;
+    }
+
     const stats = extractStats(reportData);
 
     // Load existing manifest
@@ -143,6 +130,52 @@ function main() {
 
     console.log(`✓ Manifest generated with ${manifest.reports.length} report(s)`);
     console.log(`✓ Latest run #${RUN_NUMBER}: ${stats.passed}/${stats.total} passed (${stats.passRate}%)`);
+}
+
+function createPlaceholderManifest() {
+    const manifest = loadExistingManifest();
+
+    const stats = {
+        total: 0,
+        passed: 0,
+        failed: 0,
+        flaky: 0,
+        skipped: 0,
+        duration: 0,
+        passRate: 0
+    };
+
+    const newReport = {
+        runNumber: parseInt(RUN_NUMBER),
+        runId: RUN_ID,
+        sha: SHA,
+        timestamp: new Date().toISOString(),
+        date: new Date().toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric"
+        }),
+        time: new Date().toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit"
+        }),
+        url: `reports/run-${RUN_NUMBER}/`,
+        stats
+    };
+
+    manifest.reports = [newReport, ...manifest.reports];
+    manifest.latest = newReport;
+    manifest.updatedAt = new Date().toISOString();
+
+    const reportsDir = path.join(OUTPUT_DIR, "reports");
+    if (!fs.existsSync(reportsDir)) {
+        fs.mkdirSync(reportsDir, { recursive: true });
+    }
+
+    const manifestPath = path.join(reportsDir, "manifest.json");
+    fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+
+    console.log(`✓ Placeholder manifest created for run #${RUN_NUMBER}`);
 }
 
 main();

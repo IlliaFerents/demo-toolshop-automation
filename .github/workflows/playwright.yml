@@ -58,11 +58,15 @@ jobs:
 
                   # Copy existing reports from gh-pages if available
                   if [ -d "gh-pages-checkout/reports" ]; then
-                    cp -r gh-pages-checkout/reports/manifest.json deploy/reports/ 2>/dev/null || true
+                    # Copy old manifest
+                    cp gh-pages-checkout/reports/manifest.json deploy/reports/ 2>/dev/null || true
+                    
+                    # Copy old report folders (but not latest since we're regenerating it)
+                    find gh-pages-checkout/reports -maxdepth 1 -name 'run-*' -type d -exec cp -r {} deploy/reports/ \;
                   fi
 
-                  # Generate manifest
-                  node .github/scripts/generate-manifest.js playwright-report/data.json deploy
+                  # Generate manifest (script will auto-find the data file)
+                  node .github/scripts/generate-manifest.js playwright-report deploy
 
                   # Clean up old reports (keep last 15)
                   cd deploy/reports
