@@ -136,6 +136,20 @@ function displayPassRateTrend(reports) {
     // Take last 7 runs (or all if less)
     const recentRuns = reports.slice(0, 7).reverse();
 
+    // Calculate positions for SVG
+    const chartWidth = 100; // percentage-based
+    const chartHeight = 160; // pixels
+    const pointSpacing = chartWidth / (recentRuns.length - 1);
+
+    // Generate SVG path for the line
+    const pathData = recentRuns
+        .map((report, index) => {
+            const x = index * pointSpacing;
+            const y = chartHeight - (report.stats.passRate * chartHeight) / 100;
+            return index === 0 ? `M ${x} ${y}` : `L ${x} ${y}`;
+        })
+        .join(" ");
+
     const chartHTML = `
         <div class="pass-rate-chart-container">
             <div class="y-axis-label">Pass Rate %</div>
@@ -149,42 +163,23 @@ function displayPassRateTrend(reports) {
                         <div class="gridline"><span class="gridline-label">0%</span></div>
                     </div>
                     <div class="pass-rate-line">
+                        <svg class="pass-rate-svg" viewBox="0 0 ${chartWidth} ${chartHeight}" preserveAspectRatio="none">
+                            <path d="${pathData}" fill="none" stroke="var(--pw-green)" stroke-width="2" />
+                        </svg>
                         ${recentRuns
                             .map((report, index) => {
                                 const passRate = report.stats.passRate || 0;
-                                const bottomPercent = passRate;
+                                const xPercent = index * pointSpacing;
+                                const yPercent = 100 - passRate;
                                 const tooltip = `Run #${report.runNumber}: ${passRate}% (${report.stats.passed}/${report.stats.total})`;
                                 const pointClass = passRate < 80 ? "rate-point low" : "rate-point";
 
-                                // Calculate line to next point
-                                let lineHTML = "";
-                                if (index < recentRuns.length - 1) {
-                                    const nextReport = recentRuns[index + 1];
-                                    const nextPassRate = nextReport.stats.passRate || 0;
-                                    const deltaY = nextPassRate - passRate;
-                                    const deltaX = 100 / (recentRuns.length - 1); // percentage of container width
-
-                                    // Calculate angle and length
-                                    const angle = Math.atan2(deltaY, deltaX * 1.6); // 1.6 is aspect ratio adjustment
-                                    const length = Math.sqrt(Math.pow(deltaX * 1.6, 2) + Math.pow(deltaY, 2));
-
-                                    lineHTML = `
-                                        <div class="rate-line-segment" style="
-                                            width: ${length}%;
-                                            bottom: ${bottomPercent}%;
-                                            left: 50%;
-                                            transform: rotate(${angle}rad);
-                                        "></div>
-                                    `;
-                                }
-
                                 return `
-                                    <div class="rate-point-wrapper">
+                                    <div class="rate-point-wrapper" style="left: ${xPercent}%;">
                                         <div class="${pointClass}" 
-                                             style="bottom: ${bottomPercent}%;" 
+                                             style="top: ${yPercent}%;" 
                                              title="${tooltip}">
                                         </div>
-                                        ${lineHTML}
                                         <div class="rate-label">#${report.runNumber}</div>
                                     </div>
                                 `;
