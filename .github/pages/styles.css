@@ -360,12 +360,17 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    padding: 2px 0; /* Small padding to prevent dots from touching top/bottom edges */
 }
 
 .gridline {
     display: flex;
     align-items: center;
     border-top: 1px dashed var(--border-color);
+}
+
+.gridline:first-child {
+    border-top: none; /* Remove border from 100% line to prevent visual overflow */
 }
 
 .gridline-label {

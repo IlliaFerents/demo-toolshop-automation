@@ -56,6 +56,10 @@ jobs:
                   # Copy landing page files
                   cp -r .github/pages/* deploy/
 
+                  # Add cache-busting version to script.js and styles.css references
+                  sed -i "s|script.js|script.js?v=${{ github.run_number }}|g" deploy/index.html
+                  sed -i "s|styles.css|styles.css?v=${{ github.run_number }}|g" deploy/index.html
+
                   # Copy existing reports from gh-pages if available
                   if [ -d "gh-pages-checkout/reports" ]; then
                     cp -r gh-pages-checkout/reports/manifest.json deploy/reports/ 2>/dev/null || true

@@ -139,8 +139,8 @@ function displayPassRateTrend(reports) {
     // Calculate positions for SVG with padding
     const chartWidth = 100; // percentage-based
     const chartHeight = 160; // pixels
-    const leftPadding = 2; // 2% padding on left to avoid overlap with axis
-    const rightPadding = 2; // 2% padding on right
+    const leftPadding = 5; // 5% padding on left to avoid overlap with axis
+    const rightPadding = 5; // 5% padding on right
     const usableWidth = chartWidth - leftPadding - rightPadding;
     const pointSpacing = usableWidth / (recentRuns.length - 1);
 
