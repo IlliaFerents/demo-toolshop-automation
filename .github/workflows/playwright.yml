@@ -58,11 +58,8 @@ jobs:
 
                   # Copy existing reports from gh-pages if available
                   if [ -d "gh-pages-checkout/reports" ]; then
-                    # Copy old manifest
-                    cp gh-pages-checkout/reports/manifest.json deploy/reports/ 2>/dev/null || true
-                    
-                    # Copy old report folders (but not latest since we're regenerating it)
-                    find gh-pages-checkout/reports -maxdepth 1 -name 'run-*' -type d -exec cp -r {} deploy/reports/ \;
+                    cp -r gh-pages-checkout/reports/manifest.json deploy/reports/ 2>/dev/null || true
+                    rsync -a --ignore-missing-args --exclude 'latest' --exclude 'manifest.json' gh-pages-checkout/reports/run-* deploy/reports/ 2>/dev/null || true
                   fi
 
                   # Generate manifest (script will auto-find the data file)
@@ -70,7 +67,7 @@ jobs:
 
                   # Clean up old reports (keep last 15)
                   cd deploy/reports
-                  ls -t | grep '^run-' | tail -n +16 | xargs -r rm -rf
+                  ls -dt run-* 2>/dev/null | tail -n +16 | xargs -r rm -rf
                   cd ../..
 
             - name: Upload test report

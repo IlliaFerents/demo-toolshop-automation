@@ -81,7 +81,12 @@ function displayTrends(reports) {
 
     // Take last 7 runs (or all if less)
     const recentRuns = reports.slice(0, 7).reverse();
-    const maxTotal = Math.max(...recentRuns.map((r) => r.stats.total));
+    const maxTotal = Math.max(...recentRuns.map((r) => Number(r.stats.total) || 0));
+
+    if (!Number.isFinite(maxTotal) || maxTotal <= 0) {
+        trendsContainer.innerHTML = `<p class="trends-placeholder">No test volume data yet</p>`;
+        return;
+    }
 
     trendsContainer.innerHTML = `
         <div class="trends-bars">
