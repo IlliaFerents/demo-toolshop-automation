@@ -360,7 +360,6 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 2px 0; /* Small padding to prevent dots from touching top/bottom edges */
 }
 
 .gridline {
@@ -370,7 +369,7 @@ body {
 }
 
 .gridline:first-child {
-    border-top: none; /* Remove border from 100% line to prevent visual overflow */
+    border-top: 1px solid var(--border-color); /* Solid line for 100% */
 }
 
 .gridline-label {

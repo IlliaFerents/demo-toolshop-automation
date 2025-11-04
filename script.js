@@ -139,16 +139,19 @@ function displayPassRateTrend(reports) {
     // Calculate positions for SVG with padding
     const chartWidth = 100; // percentage-based
     const chartHeight = 160; // pixels
-    const leftPadding = 5; // 5% padding on left to avoid overlap with axis
-    const rightPadding = 5; // 5% padding on right
+    const leftPadding = 7; // 7% padding on left to avoid overlap with axis
+    const rightPadding = 7; // 7% padding on right to end at last dot
+    const topPadding = 4; // 4 pixels from top to prevent dots sitting on 100% line
+    const bottomPadding = 4; // 4 pixels from bottom for symmetry
     const usableWidth = chartWidth - leftPadding - rightPadding;
+    const usableHeight = chartHeight - topPadding - bottomPadding;
     const pointSpacing = usableWidth / (recentRuns.length - 1);
 
     // Generate SVG path for the line
     const pathData = recentRuns
         .map((report, index) => {
             const x = leftPadding + index * pointSpacing;
-            const y = chartHeight - (report.stats.passRate * chartHeight) / 100;
+            const y = topPadding + (usableHeight - (report.stats.passRate * usableHeight) / 100);
             return index === 0 ? `M ${x} ${y}` : `L ${x} ${y}`;
         })
         .join(" ");
@@ -173,7 +176,9 @@ function displayPassRateTrend(reports) {
                             .map((report, index) => {
                                 const passRate = report.stats.passRate || 0;
                                 const xPercent = leftPadding + index * pointSpacing;
-                                const yPercent = 100 - passRate;
+                                // Calculate Y position to match SVG coordinates with padding
+                                const yPixels = topPadding + (usableHeight - (passRate * usableHeight) / 100);
+                                const yPercent = (yPixels / chartHeight) * 100;
                                 const tooltip = `Run #${report.runNumber}: ${passRate}% (${report.stats.passed}/${report.stats.total})`;
                                 const pointClass = passRate < 80 ? "rate-point low" : "rate-point";
 
