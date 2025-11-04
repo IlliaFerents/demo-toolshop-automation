@@ -4,7 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadManifest() {
     try {
-        const response = await fetch("reports/manifest.json");
+        // Add cache-busting timestamp to manifest fetch
+        const timestamp = new Date().getTime();
+        const response = await fetch(`reports/manifest.json?t=${timestamp}`);
         if (response.ok) {
             const manifest = await response.json();
             updateStats(manifest.latest);
@@ -136,13 +138,13 @@ function displayPassRateTrend(reports) {
     // Take last 7 runs (or all if less)
     const recentRuns = reports.slice(0, 7).reverse();
 
-    // Calculate positions for SVG with padding
-    const chartWidth = 100; // percentage-based
-    const chartHeight = 160; // pixels
-    const leftPadding = 7; // 7% padding on left to avoid overlap with axis
-    const rightPadding = 7; // 7% padding on right to end at last dot
-    const topPadding = 4; // 4 pixels from top to prevent dots sitting on 100% line
-    const bottomPadding = 4; // 4 pixels from bottom for symmetry
+    // Calculate positions for SVG with padding (all in same units as viewBox)
+    const chartWidth = 100; // viewBox width units
+    const chartHeight = 100; // viewBox height units (changed to match width for consistency)
+    const leftPadding = 7; // padding in viewBox units
+    const rightPadding = 7;
+    const topPadding = 3; // padding in viewBox units
+    const bottomPadding = 3;
     const usableWidth = chartWidth - leftPadding - rightPadding;
     const usableHeight = chartHeight - topPadding - bottomPadding;
     const pointSpacing = usableWidth / (recentRuns.length - 1);
