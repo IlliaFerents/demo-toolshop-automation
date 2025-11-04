@@ -5,7 +5,7 @@
  * Manages historical reports and cleanup
  */
 
-const fs = require("fs");
+const fs = require("node:fs");
 const path = require("path");
 
 const MAX_REPORTS = 15;
