@@ -237,11 +237,29 @@ body {
     padding: var(--spacing-lg);
 }
 
+.trends-chart-container {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.y-axis-label {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: var(--spacing-sm) 0;
+}
+
 .trends-bars {
     display: flex;
     align-items: flex-end;
     justify-content: space-around;
     height: 200px;
+    flex: 1;
     gap: var(--spacing-sm);
     padding: var(--spacing-md);
     background-color: var(--bg-tertiary);
@@ -267,11 +285,12 @@ body {
     border-radius: 4px;
     overflow: hidden;
     transition: all 0.3s ease;
+    cursor: help;
 }
 
 .trend-bar:hover {
     transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .bar-segment {

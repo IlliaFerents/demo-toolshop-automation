@@ -89,25 +89,37 @@ function displayTrends(reports) {
     }
 
     trendsContainer.innerHTML = `
-        <div class="trends-bars">
-            ${recentRuns
-                .map((report) => {
-                    const passHeight = (report.stats.passed / maxTotal) * 100;
-                    const failHeight = (report.stats.failed / maxTotal) * 100;
-                    const flakyHeight = (report.stats.flaky / maxTotal) * 100;
+        <div class="trends-chart-container">
+            <div class="y-axis-label">Tests</div>
+            <div class="trends-bars">
+                ${recentRuns
+                    .map((report) => {
+                        const passHeight = (report.stats.passed / maxTotal) * 100;
+                        const failHeight = (report.stats.failed / maxTotal) * 100;
+                        const flakyHeight = (report.stats.flaky / maxTotal) * 100;
 
-                    return `
-                    <div class="trend-bar-wrapper">
-                        <div class="trend-bar">
-                            <div class="bar-segment bar-passed" style="height: ${passHeight}%"></div>
-                            <div class="bar-segment bar-failed" style="height: ${failHeight}%"></div>
-                            <div class="bar-segment bar-flaky" style="height: ${flakyHeight}%"></div>
+                        const tooltip =
+                            [
+                                report.stats.passed > 0 ? `${report.stats.passed} passed` : null,
+                                report.stats.failed > 0 ? `${report.stats.failed} failed` : null,
+                                report.stats.flaky > 0 ? `${report.stats.flaky} flaky` : null
+                            ]
+                                .filter(Boolean)
+                                .join(", ") || "0 tests";
+
+                        return `
+                        <div class="trend-bar-wrapper">
+                            <div class="trend-bar" title="${tooltip}">
+                                <div class="bar-segment bar-passed" style="height: ${passHeight}%"></div>
+                                <div class="bar-segment bar-failed" style="height: ${failHeight}%"></div>
+                                <div class="bar-segment bar-flaky" style="height: ${flakyHeight}%"></div>
+                            </div>
+                            <div class="trend-label">#${report.runNumber}</div>
                         </div>
-                        <div class="trend-label">#${report.runNumber}</div>
-                    </div>
-                `;
-                })
-                .join("")}
+                    `;
+                    })
+                    .join("")}
+            </div>
         </div>
         <div class="trends-legend">
             <span class="legend-item"><span class="legend-dot passed"></span>Passed</span>
