@@ -1,6 +1,3 @@
-// Placeholder for future dynamic functionality
-// This will be expanded when we add the dashboard features
-
 document.addEventListener("DOMContentLoaded", () => {
     loadManifest();
 });
