@@ -136,15 +136,18 @@ function displayPassRateTrend(reports) {
     // Take last 7 runs (or all if less)
     const recentRuns = reports.slice(0, 7).reverse();
 
-    // Calculate positions for SVG
+    // Calculate positions for SVG with padding
     const chartWidth = 100; // percentage-based
     const chartHeight = 160; // pixels
-    const pointSpacing = chartWidth / (recentRuns.length - 1);
+    const leftPadding = 2; // 2% padding on left to avoid overlap with axis
+    const rightPadding = 2; // 2% padding on right
+    const usableWidth = chartWidth - leftPadding - rightPadding;
+    const pointSpacing = usableWidth / (recentRuns.length - 1);
 
     // Generate SVG path for the line
     const pathData = recentRuns
         .map((report, index) => {
-            const x = index * pointSpacing;
+            const x = leftPadding + index * pointSpacing;
             const y = chartHeight - (report.stats.passRate * chartHeight) / 100;
             return index === 0 ? `M ${x} ${y}` : `L ${x} ${y}`;
         })
@@ -164,12 +167,12 @@ function displayPassRateTrend(reports) {
                     </div>
                     <div class="pass-rate-line">
                         <svg class="pass-rate-svg" viewBox="0 0 ${chartWidth} ${chartHeight}" preserveAspectRatio="none">
-                            <path d="${pathData}" fill="none" stroke="var(--pw-green)" stroke-width="2" />
+                            <path d="${pathData}" fill="none" stroke="var(--pw-green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                         ${recentRuns
                             .map((report, index) => {
                                 const passRate = report.stats.passRate || 0;
-                                const xPercent = index * pointSpacing;
+                                const xPercent = leftPadding + index * pointSpacing;
                                 const yPercent = 100 - passRate;
                                 const tooltip = `Run #${report.runNumber}: ${passRate}% (${report.stats.passed}/${report.stats.total})`;
                                 const pointClass = passRate < 80 ? "rate-point low" : "rate-point";
