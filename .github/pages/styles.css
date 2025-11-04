@@ -272,7 +272,9 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-end;
     gap: var(--spacing-xs);
+    height: 100%;
 }
 
 .trend-bar {
@@ -280,7 +282,8 @@ body {
     max-width: 60px;
     display: flex;
     flex-direction: column-reverse;
-    height: 160px;
+    flex: 1;
+    max-height: 160px;
     background-color: var(--bg-secondary);
     border-radius: 4px;
     overflow: hidden;
@@ -321,6 +324,126 @@ body {
     justify-content: center;
     gap: var(--spacing-md);
     margin-top: var(--spacing-md);
+}
+
+/* Pass Rate Trend Chart */
+.pass-rate-chart-container {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+}
+
+.pass-rate-chart {
+    flex: 1;
+    position: relative;
+    height: 200px;
+    padding: var(--spacing-md);
+    background-color: var(--bg-tertiary);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.pass-rate-grid {
+    position: relative;
+    height: 160px;
+    width: 100%;
+}
+
+.pass-rate-gridlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.gridline {
+    display: flex;
+    align-items: center;
+    border-top: 1px dashed var(--border-color);
+}
+
+.gridline-label {
+    font-size: 0.625rem;
+    color: var(--text-tertiary);
+    margin-right: var(--spacing-xs);
+    min-width: 30px;
+}
+
+.pass-rate-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+}
+
+.rate-point-wrapper {
+    flex: 1;
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.rate-point {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: var(--pw-green);
+    border: 2px solid var(--bg-primary);
+    border-radius: 50%;
+    cursor: help;
+    transition: all 0.2s ease;
+    z-index: 2;
+}
+
+.rate-point:hover {
+    transform: scale(1.8);
+    background-color: var(--pw-green-light);
+    box-shadow: 0 0 0 3px rgba(45, 94, 63, 0.2);
+}
+
+.rate-point.low {
+    background-color: var(--pw-red);
+}
+
+.rate-point.low:hover {
+    background-color: #e74c3c;
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+}
+
+.rate-line-segment {
+    position: absolute;
+    height: 2px;
+    background-color: var(--pw-green);
+    transform-origin: left center;
+    z-index: 1;
+}
+
+.rate-label {
+    position: absolute;
+    bottom: -20px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.pass-rate-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-secondary);
 }
 
 .legend-item {

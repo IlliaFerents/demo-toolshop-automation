@@ -10,6 +10,7 @@ async function loadManifest() {
             updateStats(manifest.latest);
             displayReports(manifest.reports);
             displayTrends(manifest.reports);
+            displayPassRateTrend(manifest.reports);
         } else {
             setDefaultStats();
         }
@@ -124,6 +125,78 @@ function displayTrends(reports) {
             <span class="legend-item"><span class="legend-dot flaky"></span>Flaky</span>
         </div>
     `;
+}
+
+function displayPassRateTrend(reports) {
+    if (!reports || reports.length < 2) return;
+
+    const passRateContainer = document.getElementById("pass-rate-chart");
+    if (!passRateContainer) return;
+
+    // Take last 7 runs (or all if less)
+    const recentRuns = reports.slice(0, 7).reverse();
+
+    const chartHTML = `
+        <div class="pass-rate-chart-container">
+            <div class="y-axis-label">Pass Rate %</div>
+            <div class="pass-rate-chart">
+                <div class="pass-rate-grid">
+                    <div class="pass-rate-gridlines">
+                        <div class="gridline"><span class="gridline-label">100%</span></div>
+                        <div class="gridline"><span class="gridline-label">75%</span></div>
+                        <div class="gridline"><span class="gridline-label">50%</span></div>
+                        <div class="gridline"><span class="gridline-label">25%</span></div>
+                        <div class="gridline"><span class="gridline-label">0%</span></div>
+                    </div>
+                    <div class="pass-rate-line">
+                        ${recentRuns
+                            .map((report, index) => {
+                                const passRate = report.stats.passRate || 0;
+                                const bottomPercent = passRate;
+                                const tooltip = `Run #${report.runNumber}: ${passRate}% (${report.stats.passed}/${report.stats.total})`;
+                                const pointClass = passRate < 80 ? "rate-point low" : "rate-point";
+
+                                // Calculate line to next point
+                                let lineHTML = "";
+                                if (index < recentRuns.length - 1) {
+                                    const nextReport = recentRuns[index + 1];
+                                    const nextPassRate = nextReport.stats.passRate || 0;
+                                    const deltaY = nextPassRate - passRate;
+                                    const deltaX = 100 / (recentRuns.length - 1); // percentage of container width
+
+                                    // Calculate angle and length
+                                    const angle = Math.atan2(deltaY, deltaX * 1.6); // 1.6 is aspect ratio adjustment
+                                    const length = Math.sqrt(Math.pow(deltaX * 1.6, 2) + Math.pow(deltaY, 2));
+
+                                    lineHTML = `
+                                        <div class="rate-line-segment" style="
+                                            width: ${length}%;
+                                            bottom: ${bottomPercent}%;
+                                            left: 50%;
+                                            transform: rotate(${angle}rad);
+                                        "></div>
+                                    `;
+                                }
+
+                                return `
+                                    <div class="rate-point-wrapper">
+                                        <div class="${pointClass}" 
+                                             style="bottom: ${bottomPercent}%;" 
+                                             title="${tooltip}">
+                                        </div>
+                                        ${lineHTML}
+                                        <div class="rate-label">#${report.runNumber}</div>
+                                    </div>
+                                `;
+                            })
+                            .join("")}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    passRateContainer.innerHTML = chartHTML;
 }
 
 // Add smooth scrolling for anchor links
