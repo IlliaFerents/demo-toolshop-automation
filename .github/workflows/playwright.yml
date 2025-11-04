@@ -89,4 +89,4 @@ jobs:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   publish_dir: ./deploy
                   keep_files: false
-                  force_orphan: true
+                  # force_orphan removed - keep incremental git history on gh-pages
