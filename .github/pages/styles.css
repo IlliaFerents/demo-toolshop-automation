@@ -220,6 +220,116 @@ body {
     letter-spacing: 0.5px;
 }
 
+/* Trends Section */
+.trends {
+    padding: var(--spacing-xl) 0;
+    background-color: var(--bg-primary);
+}
+
+.trends-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.trends-placeholder {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: var(--spacing-lg);
+}
+
+.trends-bars {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    height: 200px;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background-color: var(--bg-tertiary);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.trend-bar-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.trend-bar {
+    width: 100%;
+    max-width: 60px;
+    display: flex;
+    flex-direction: column-reverse;
+    height: 160px;
+    background-color: var(--bg-secondary);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.trend-bar:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.bar-segment {
+    width: 100%;
+    transition: height 0.3s ease;
+}
+
+.bar-passed {
+    background: linear-gradient(180deg, var(--pw-green-light) 0%, var(--pw-green) 100%);
+}
+
+.bar-failed {
+    background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%);
+}
+
+.bar-flaky {
+    background: linear-gradient(180deg, #f39c12 0%, #e67e22 100%);
+}
+
+.trend-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.trends-legend {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.legend-dot.passed {
+    background-color: var(--pw-green);
+}
+
+.legend-dot.failed {
+    background-color: #e74c3c;
+}
+
+.legend-dot.flaky {
+    background-color: #f39c12;
+}
+
 /* Reports Section */
 .reports {
     padding: var(--spacing-xl) 0;
@@ -347,6 +457,20 @@ body {
 
     .stats-grid {
         grid-template-columns: 1fr;
+    }
+
+    .trends-bars {
+        height: 150px;
+        gap: 0.25rem;
+    }
+
+    .trend-bar {
+        height: 120px;
+        max-width: 40px;
+    }
+
+    .trend-label {
+        font-size: 0.625rem;
     }
 
     .report-item {

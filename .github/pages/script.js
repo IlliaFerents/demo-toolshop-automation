@@ -2,45 +2,41 @@
 // This will be expanded when we add the dashboard features
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadTestStats();
-    loadRecentReports();
+    loadManifest();
 });
 
-async function loadTestStats() {
+async function loadManifest() {
     try {
-        // Try to fetch test stats from the latest report
-        const response = await fetch("reports/latest/data.json");
+        const response = await fetch("reports/manifest.json");
         if (response.ok) {
-            const data = await response.json();
-            updateStats(data);
+            const manifest = await response.json();
+            updateStats(manifest.latest);
+            displayReports(manifest.reports);
+            displayTrends(manifest.reports);
         } else {
-            // Default values when no report exists yet
             setDefaultStats();
         }
     } catch (error) {
-        console.log("No stats available yet:", error);
+        console.log("No manifest available yet:", error);
         setDefaultStats();
     }
 }
 
-function updateStats(data) {
-    const totalTests = data.stats?.expected || 0;
-    const passed = data.stats?.expected - data.stats?.unexpected || 0;
-    const failed = data.stats?.unexpected || 0;
+function updateStats(latest) {
+    if (!latest) {
+        setDefaultStats();
+        return;
+    }
 
-    document.getElementById("total-tests").textContent = totalTests;
+    const { stats, date, time } = latest;
 
-    const lastRun = new Date().toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric"
-    });
-    document.getElementById("last-run").textContent = lastRun;
+    document.getElementById("total-tests").textContent = stats.total;
+    document.getElementById("last-run").textContent = `${date} ${time}`;
 
-    const status = failed === 0 ? "✓ Passing" : `✗ ${failed} Failed`;
+    const statusText = stats.failed === 0 ? "✓ Passing" : `✗ ${stats.failed} Failed`;
     const statusElement = document.getElementById("test-status");
-    statusElement.textContent = status;
-    statusElement.style.color = failed === 0 ? "var(--pw-green)" : "var(--pw-red)";
+    statusElement.textContent = statusText;
+    statusElement.style.color = stats.failed === 0 ? "var(--pw-green)" : "var(--pw-red)";
 }
 
 function setDefaultStats() {
@@ -49,44 +45,71 @@ function setDefaultStats() {
     document.getElementById("test-status").textContent = "Pending";
 }
 
-async function loadRecentReports() {
-    try {
-        // Try to fetch reports manifest
-        const response = await fetch("reports/manifest.json");
-        if (response.ok) {
-            const reports = await response.json();
-            displayReports(reports);
-        }
-    } catch (error) {
-        console.log("No reports manifest available yet:", error);
-        // Keep the default placeholder
-    }
-}
-
 function displayReports(reports) {
+    if (!reports || reports.length === 0) return;
+
     const reportsList = document.getElementById("reports-list");
-
-    if (!reports || reports.length === 0) {
-        return;
-    }
-
     reportsList.innerHTML = reports
         .slice(0, 5)
-        .map(
-            (report) => `
-        <div class="report-item">
-            <div class="report-info">
-                <h3 class="report-title">${report.title}</h3>
-                <p class="report-meta">
-                    ${report.date} • ${report.tests} tests
-                    ${report.status ? `• <span class="report-status ${report.status}">${report.status}</span>` : ""}
-                </p>
+        .map((report) => {
+            const { stats, date, time, url, runNumber } = report;
+            const statusClass = stats.failed === 0 ? "passed" : "failed";
+            const statusText = stats.failed === 0 ? "Passed" : "Failed";
+
+            return `
+            <div class="report-item">
+                <div class="report-info">
+                    <h3 class="report-title">Run #${runNumber}</h3>
+                    <p class="report-meta">
+                        ${date} at ${time} • ${stats.passed}/${stats.total} passed
+                        ${stats.flaky > 0 ? `• ${stats.flaky} flaky` : ""}
+                        • <span class="report-status ${statusClass}">${statusText}</span>
+                    </p>
+                </div>
+                <a href="${url}" class="btn btn-small">View Report</a>
             </div>
-            <a href="${report.url}" class="btn btn-small">View Report</a>
-        </div>
-    `
-        )
+        `;
+        })
         .join("");
+}
+
+function displayTrends(reports) {
+    if (!reports || reports.length < 2) return;
+
+    const trendsContainer = document.getElementById("trends-chart");
+    if (!trendsContainer) return;
+
+    // Take last 7 runs (or all if less)
+    const recentRuns = reports.slice(0, 7).reverse();
+    const maxTotal = Math.max(...recentRuns.map((r) => r.stats.total));
+
+    trendsContainer.innerHTML = `
+        <div class="trends-bars">
+            ${recentRuns
+                .map((report) => {
+                    const passHeight = (report.stats.passed / maxTotal) * 100;
+                    const failHeight = (report.stats.failed / maxTotal) * 100;
+                    const flakyHeight = (report.stats.flaky / maxTotal) * 100;
+
+                    return `
+                    <div class="trend-bar-wrapper">
+                        <div class="trend-bar">
+                            <div class="bar-segment bar-passed" style="height: ${passHeight}%"></div>
+                            <div class="bar-segment bar-failed" style="height: ${failHeight}%"></div>
+                            <div class="bar-segment bar-flaky" style="height: ${flakyHeight}%"></div>
+                        </div>
+                        <div class="trend-label">#${report.runNumber}</div>
+                    </div>
+                `;
+                })
+                .join("")}
+        </div>
+        <div class="trends-legend">
+            <span class="legend-item"><span class="legend-dot passed"></span>Passed</span>
+            <span class="legend-item"><span class="legend-dot failed"></span>Failed</span>
+            <span class="legend-item"><span class="legend-dot flaky"></span>Flaky</span>
+        </div>
+    `;
 }
 
 // Add smooth scrolling for anchor links

@@ -32,12 +32,42 @@ jobs:
             - name: Run Playwright tests
               run: npm run test:all:chrome
 
+            - name: Checkout gh-pages branch
+              if: always()
+              uses: actions/checkout@v4
+              with:
+                  ref: gh-pages
+                  path: gh-pages-checkout
+              continue-on-error: true
+
             - name: Prepare deployment directory
               if: always()
               run: |
+                  # Create deployment structure
+                  mkdir -p deploy/reports/run-${{ github.run_number }}
                   mkdir -p deploy/reports/latest
+
+                  # Copy test report to run-specific folder
+                  cp -r playwright-report/* deploy/reports/run-${{ github.run_number }}/
+
+                  # Copy test report to latest folder
                   cp -r playwright-report/* deploy/reports/latest/
+
+                  # Copy landing page files
                   cp -r .github/pages/* deploy/
+
+                  # Copy existing reports from gh-pages if available
+                  if [ -d "gh-pages-checkout/reports" ]; then
+                    cp -r gh-pages-checkout/reports/manifest.json deploy/reports/ 2>/dev/null || true
+                  fi
+
+                  # Generate manifest
+                  node .github/scripts/generate-manifest.js playwright-report/data.json deploy
+
+                  # Clean up old reports (keep last 15)
+                  cd deploy/reports
+                  ls -t | grep '^run-' | tail -n +16 | xargs -r rm -rf
+                  cd ../..
 
             - name: Upload test report
               if: always()
