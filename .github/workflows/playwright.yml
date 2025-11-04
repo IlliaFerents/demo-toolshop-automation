@@ -85,3 +85,4 @@ jobs:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   publish_dir: ./deploy
                   keep_files: false
+                  force_orphan: true
