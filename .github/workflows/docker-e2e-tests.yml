@@ -1,4 +1,4 @@
-name: Docker Tests
+name: Docker E2E Tests
 
 on:
     workflow_dispatch:
