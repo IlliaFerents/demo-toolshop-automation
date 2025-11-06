@@ -1,0 +1,46 @@
+name: Scheduled E2E Tests
+
+on:
+    schedule:
+        # Run every Monday at 7:00 AM UTC
+        - cron: "0 7 * * 1"
+
+jobs:
+    scheduled-test:
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "lts/*"
+                  cache: "npm"
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Install Playwright browsers
+              run: npx playwright install chromium
+
+            - name: Run Playwright tests
+              run: npm run test:all:chrome
+
+            - name: Upload test results
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: scheduled-playwright-report
+                  path: playwright-report/
+                  retention-days: 10
+
+            - name: Upload test artifacts
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: scheduled-test-results
+                  path: test-results/
+                  retention-days: 10
