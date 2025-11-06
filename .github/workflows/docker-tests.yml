@@ -16,8 +16,13 @@ on:
             workers:
                 description: "Number of parallel workers"
                 required: true
-                default: "4"
-                type: string
+                default: "2"
+                type: choice
+                options:
+                    - "1"
+                    - "2"
+                    - "3"
+                    - "4"
             tag:
                 description: "Test tag filter (e.g., @login, @smoke)"
                 required: false
