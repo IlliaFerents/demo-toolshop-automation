@@ -59,7 +59,6 @@ jobs:
               run: |
                   # Create output directories with proper permissions
                   mkdir -p playwright-report test-results
-                  chmod 777 playwright-report test-results
 
                   TEST_CMD="npx playwright test ${{ inputs.test_path }}"
 
@@ -80,7 +79,7 @@ jobs:
                     -v ${{ github.workspace }}/playwright-report:/app/playwright-report \
                     -v ${{ github.workspace }}/test-results:/app/test-results \
                     -e CI=true \
-                    --user pwuser \
+                    --user root \
                     playwright-tests:latest $TEST_CMD
 
             - name: Upload test results
