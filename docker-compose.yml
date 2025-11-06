@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+    playwright-tests:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        volumes:
+            # Mount code for live updates during development
+            - .:/app
+            # Preserve node_modules from container
+            - /app/node_modules
+            # Share test results and reports with host
+            - ./test-results:/app/test-results
+            - ./playwright-report:/app/playwright-report
+        environment:
+            # Pass environment variables for test configuration
+            - CI=true
+        command: npx playwright test

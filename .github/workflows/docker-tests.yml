@@ -1,0 +1,100 @@
+name: Docker Tests
+
+on:
+    workflow_dispatch:
+        inputs:
+            browser:
+                description: "Browser to run tests on"
+                required: true
+                default: "chromium"
+                type: choice
+                options:
+                    - chromium
+                    - firefox
+                    - webkit
+                    - all
+            workers:
+                description: "Number of parallel workers"
+                required: true
+                default: "4"
+                type: string
+            tag:
+                description: "Test tag filter (e.g., @login, @smoke)"
+                required: false
+                type: string
+            test_path:
+                description: "Test path to run"
+                required: true
+                default: "tests"
+                type: string
+
+jobs:
+    docker-test:
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Cache Docker layers
+              uses: actions/cache@v4
+              with:
+                  path: /tmp/.buildx-cache
+                  key: ${{ runner.os }}-buildx-${{ hashFiles('**/package-lock.json', '**/Dockerfile') }}
+                  restore-keys: |
+                      ${{ runner.os }}-buildx-
+
+            - name: Build Docker image
+              run: |
+                  docker build \
+                    --cache-from type=local,src=/tmp/.buildx-cache \
+                    --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max \
+                    -t playwright-tests .
+
+            - name: Move cache
+              run: |
+                  rm -rf /tmp/.buildx-cache
+                  mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+            - name: Run Playwright tests in Docker
+              run: |
+                  TEST_CMD="npx playwright test ${{ inputs.test_path }}"
+
+                  # Add browser project filter
+                  if [ "${{ inputs.browser }}" != "all" ]; then
+                    TEST_CMD="$TEST_CMD --project=${{ inputs.browser }}"
+                  fi
+
+                  # Add workers
+                  TEST_CMD="$TEST_CMD --workers=${{ inputs.workers }}"
+
+                  # Add tag filter if provided
+                  if [ -n "${{ inputs.tag }}" ]; then
+                    TEST_CMD="$TEST_CMD --grep ${{ inputs.tag }}"
+                  fi
+
+                  docker run --rm \
+                    -v ${{ github.workspace }}/playwright-report:/app/playwright-report \
+                    -v ${{ github.workspace }}/test-results:/app/test-results \
+                    -e CI=true \
+                    playwright-tests $TEST_CMD
+
+            - name: Upload test results
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: playwright-report-docker
+                  path: playwright-report/
+                  retention-days: 30
+
+            - name: Upload test artifacts
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: test-results-docker
+                  path: test-results/
+                  retention-days: 7

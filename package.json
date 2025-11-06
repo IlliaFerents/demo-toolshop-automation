@@ -1,7 +1,11 @@
 {
     "scripts": {
         "prepare": "husky",
-        "test:all:chrome": "playwright test --project=chromium --workers=4 --retries=1"
+        "test:all:chrome": "playwright test --project=chromium --workers=4 --retries=1",
+        "docker:build": "docker build -t playwright-tests .",
+        "docker:test": "docker-compose up --abort-on-container-exit",
+        "docker:test:local": "docker run --rm -v $(pwd)/playwright-report:/app/playwright-report -v $(pwd)/test-results:/app/test-results playwright-tests",
+        "docker:shell": "docker run --rm -it playwright-tests /bin/bash"
     },
     "devDependencies": {
         "@faker-js/faker": "^10.1.0",

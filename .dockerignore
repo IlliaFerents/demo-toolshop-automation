@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log
+test-results
+playwright-report
+.env
+.git
+.github
+.husky
+.vscode
+*.md
