@@ -1,6 +1,24 @@
 {
   "reports": [
     {
+      "runNumber": 1,
+      "runId": "19138173752",
+      "sha": "1b6e14a",
+      "timestamp": "2025-11-06T14:02:30.854Z",
+      "date": "Nov 6, 2025",
+      "time": "02:02 PM",
+      "url": "reports/run-1/",
+      "stats": {
+        "total": 6,
+        "passed": 6,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "duration": 14,
+        "passRate": 100
+      }
+    },
+    {
       "runNumber": 26,
       "runId": "19079550085",
       "sha": "ea12e8d",
@@ -254,24 +272,24 @@
     }
   ],
   "latest": {
-    "runNumber": 26,
-    "runId": "19079550085",
-    "sha": "ea12e8d",
-    "timestamp": "2025-11-04T18:52:11.519Z",
-    "date": "Nov 4, 2025",
-    "time": "06:52 PM",
-    "url": "reports/run-26/",
+    "runNumber": 1,
+    "runId": "19138173752",
+    "sha": "1b6e14a",
+    "timestamp": "2025-11-06T14:02:30.854Z",
+    "date": "Nov 6, 2025",
+    "time": "02:02 PM",
+    "url": "reports/run-1/",
     "stats": {
       "total": 6,
       "passed": 6,
       "failed": 0,
       "flaky": 0,
       "skipped": 0,
-      "duration": 10,
+      "duration": 14,
       "passRate": 100
     }
   },
-  "updatedAt": "2025-11-04T18:52:11.533Z",
+  "updatedAt": "2025-11-06T14:02:30.868Z",
   "trends": {
     "passRate": 0,
     "total": 0
