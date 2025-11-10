@@ -2,6 +2,7 @@ import { test as base } from "@playwright/test";
 import LoginPage from "../pages/login.page";
 import RegistrationPage from "../pages/register.page";
 import ContactPage from "../pages/contact.page";
+import ProductPage from "../pages/product.page";
 import HeaderComponent from "../page-components/header.component";
 import FiltersComponent from "../page-components/filters.component";
 import UserAPI from "../util/api/user";
@@ -18,6 +19,10 @@ export const test = base.extend({
     contactPage: async ({ page }, use) => {
         const contactPage = new ContactPage(page);
         await use(contactPage);
+    },
+    productPage: async ({ page }, use) => {
+        const productPage = new ProductPage(page);
+        await use(productPage);
     },
     headerComponent: async ({ page }, use) => {
         const headerComponent = new HeaderComponent(page);
