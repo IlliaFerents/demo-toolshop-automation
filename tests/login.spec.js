@@ -34,4 +34,15 @@ test.describe("Login", { tag: "@login" }, () => {
             expect(page.url()).toContain("/auth/login");
         }
     );
+
+    /**
+     * @testrail 3
+     */
+    test("login fails when required fields are empty", { tag: "@validation_errors" }, async ({ page, loginPage }) => {
+        await loginPage.loginUI("", "");
+
+        await expect(page.getByText("Email is required")).toBeVisible();
+        await expect(page.getByText("Password is required")).toBeVisible();
+        expect(page.url()).toContain("/auth/login");
+    });
 });

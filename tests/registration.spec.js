@@ -7,7 +7,7 @@ test.describe("Registration", { tag: "@registration" }, () => {
         await loginPage.registerAccountLink.click();
     });
     /**
-     * @testrail 3
+     * @testrail 4
      */
     test("user is registered with valid customer data", async ({
         page,
@@ -27,7 +27,7 @@ test.describe("Registration", { tag: "@registration" }, () => {
         expect(page.url()).toContain("/account");
     });
     /**
-     * @testrail 4
+     * @testrail 5
      */
     test(
         "validation error messages are displayed on submitting register form with empty fields",
@@ -47,6 +47,23 @@ test.describe("Registration", { tag: "@registration" }, () => {
             await expect(page.getByText("Email is required")).toBeVisible();
             await expect(page.getByText("Password is required")).toBeVisible();
 
+            expect(page.url()).toContain("/auth/register");
+        }
+    );
+
+    /**
+     * @testrail 6
+     */
+    test(
+        "registration fails with invalid date format",
+        { tag: "@validation_errors" },
+        async ({ page, registrationPage }) => {
+            const userData = randomData.generateUserSignUpData();
+            userData.dob = "invalid-date";
+
+            await registrationPage.registerWithDetails(userData);
+
+            await expect(page.getByText("Please enter a valid date in YYYY-MM-DD format.")).toBeVisible();
             expect(page.url()).toContain("/auth/register");
         }
     );
