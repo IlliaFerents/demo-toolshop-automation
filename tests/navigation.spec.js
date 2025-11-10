@@ -1,14 +1,15 @@
 import { test, expect } from "../fixtures/page_fixtures";
+import { URLS } from "../util/constants/urls";
 
 test.describe("Navigation", { tag: "@navigation" }, () => {
     /**
      * @testrail 10
      */
     test("clicking brand logo redirects to home page", async ({ page, headerComponent }) => {
-        await page.goto("/contact");
+        await page.goto(URLS.CONTACT);
         await page.locator(".navbar-brand").click();
 
-        expect(page.url()).not.toContain("/contact");
+        expect(page.url()).not.toContain(URLS.CONTACT);
         await expect(headerComponent.homeLink).toHaveClass("nav-link active");
     });
 
@@ -19,20 +20,20 @@ test.describe("Navigation", { tag: "@navigation" }, () => {
         await page.goto("/");
 
         await headerComponent.contactLink.click();
-        await page.waitForURL("**/contact");
-        expect(page.url()).toContain("/contact");
+        await page.waitForURL("**" + URLS.CONTACT);
+        expect(page.url()).toContain(URLS.CONTACT);
 
         await headerComponent.homeLink.click();
-        await page.waitForURL("**/");
-        expect(page.url()).not.toContain("/contact");
+        await page.waitForURL("**" + URLS.HOME);
+        expect(page.url()).not.toContain(URLS.CONTACT);
 
         await headerComponent.categoriesButton.click();
         await page.getByText("Hand Tools").click();
-        await page.waitForURL("**/category/hand-tools");
-        expect(page.url()).toContain("/category/hand-tools");
+        await page.waitForURL("**" + URLS.HAND_TOOLS_CATEGORY);
+        expect(page.url()).toContain(URLS.HAND_TOOLS_CATEGORY);
 
         await headerComponent.signInLink.click();
-        await page.waitForURL("**/auth/login");
-        expect(page.url()).toContain("/auth/login");
+        await page.waitForURL("**" + URLS.LOGIN);
+        expect(page.url()).toContain(URLS.LOGIN);
     });
 });
