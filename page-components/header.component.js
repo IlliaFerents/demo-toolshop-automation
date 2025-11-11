@@ -11,6 +11,7 @@ class HeaderComponent {
         this.categoriesButton = page.getByTestId("nav-categories");
         this.contactLink = page.getByTestId("nav-contact");
         this.signInLink = page.getByTestId("nav-sign-in");
+        this.cartLink = page.getByTestId("nav-cart");
         this.languageSelectButton = page.getByTestId("language-select");
     }
 
