@@ -56,3 +56,15 @@ export function generateMessage() {
     }
     return message.substring(0, 100);
 }
+
+/**
+ * Returns a random element from the provided array
+ * @param {Array} arr - The array to pick a random element from
+ * @returns {*} A random element from the array
+ */
+export function getRandomArrayElement(arr) {
+    if (!Array.isArray(arr) || arr.length === 0) {
+        throw new Error("Input must be a non-empty array");
+    }
+    return faker.helpers.arrayElement(arr);
+}
