@@ -19,6 +19,12 @@ export default defineConfig({
     // Reporter to use
     reporter: [["html"], ["json", { outputFile: "playwright-report/results.json" }]],
 
+    // Global setup - runs once per test session
+    globalSetup: "./setup/global.setup.js",
+
+    // Global teardown - runs once when session ends
+    globalTeardown: "./setup/global.teardown.js",
+
     use: {
         // Base URL to use in actions like `await page.goto('/')`.
         baseURL: "https://practicesoftwaretesting.com/",
@@ -38,7 +44,10 @@ export default defineConfig({
     projects: [
         {
             name: "chromium",
-            use: { ...devices["Desktop Chrome"] }
+            use: {
+                ...devices["Desktop Chrome"],
+                storageState: "playwright/.auth/user.json"
+            }
         }
     ]
 });

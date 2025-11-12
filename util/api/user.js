@@ -1,5 +1,5 @@
 import axios from "axios";
-import { generateRandomUser } from "../random_data_generator/user.js";
+import { generateUserSignUpData } from "../random_data_generator/user.js";
 import { getAuthToken } from "../auth/get_auth_token";
 
 /**
@@ -48,7 +48,7 @@ class UserAPI {
      *   email: 'john@doe.example'
      * });
      */
-    async register(userData = generateRandomUser()) {
+    async register(userData = generateUserSignUpData()) {
         try {
             const response = await axios.post(`${this.#baseURL}/users/register`, userData);
             return response.data;
