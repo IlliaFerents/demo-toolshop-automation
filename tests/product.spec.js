@@ -1,22 +1,21 @@
 import { test, expect } from "../fixtures/page_fixtures";
 
-test.describe("Product", { tag: "@product" }, () => {
+test.describe("Product", { tag: ["@product", "@logged_out"] }, () => {
+    test.use({ storageState: { cookies: [], origins: [] } });
+
     test.beforeEach(async ({ homePage }) => {
         await homePage.goToHomePage();
     });
+
     /**
      * @testrail 13
      */
-    test(
-        "cannot be added to favorites for logged out user",
-        { tag: "@logged_out" },
-        async ({ page, homePage, productPage }) => {
-            await homePage.clickRandomProduct();
-            await productPage.addToFavorites();
+    test("cannot be added to favorites for logged out user", async ({ page, homePage, productPage }) => {
+        await homePage.clickRandomProduct();
+        await productPage.addToFavorites();
 
-            await expect(page.getByText("Unauthorized, can not add product to your favorite list.")).toBeVisible();
-        }
-    );
+        await expect(page.getByText("Unauthorized, can not add product to your favorite list.")).toBeVisible();
+    });
 
     /**
      * @testrail 14
