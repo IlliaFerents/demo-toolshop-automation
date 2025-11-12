@@ -2,6 +2,7 @@ import { chromium } from "@playwright/test";
 import UserAPI from "../util/api/user.js";
 import { generateUserSignUpData } from "../util/random_data_generator/user.js";
 import { env } from "../env.js";
+import logger from "../util/logger/logger.js";
 import fs from "node:fs";
 
 const authFile = "playwright/.auth/user.json";
@@ -11,11 +12,11 @@ const authFile = "playwright/.auth/user.json";
  * Creates a new user and saves authenticated state
  */
 async function globalSetup() {
-    console.log("\n🔧 Starting global authentication setup...");
+    logger.log("info", "🔧 Starting global authentication setup...");
 
     if (fs.existsSync(authFile)) {
-        console.log(`⚠️ Auth file already exists at ${authFile}`);
-        console.log("   Deleting existing auth file to create fresh user...");
+        logger.log("warn", `Auth file already exists at ${authFile}`);
+        logger.log("warn", "   Deleting existing auth file to create fresh user...");
         fs.unlinkSync(authFile);
     }
 
@@ -27,10 +28,10 @@ async function globalSetup() {
         const userData = generateUserSignUpData();
 
         await userAPI.register(userData);
-        console.log(`✓ Registered user: ${userData.email}`);
+        logger.log("info", `✓ Registered user: ${userData.email}`);
 
         const loginResponse = await userAPI.login(userData.email, userData.password);
-        console.log(`✓ Login successful`);
+        logger.log("info", `✓ Login successful`);
         const token = loginResponse.access_token;
 
         if (!token) {
@@ -45,8 +46,8 @@ async function globalSetup() {
 
         await page.context().storageState({ path: authFile });
 
-        console.log(`✅ Authentication setup complete. Storage state saved to ${authFile}`);
-        console.log(`   Token expires in 300 seconds (5 minutes)\n`);
+        logger.log("info", `✅ Authentication setup complete. Storage state saved to ${authFile}`);
+        logger.log("info", `   Token expires in 300 seconds (5 minutes)\n`);
     } finally {
         await browser.close();
     }

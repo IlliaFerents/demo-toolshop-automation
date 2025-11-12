@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "path";
+import logger from "../util/logger/logger.js";
 
 const authFile = "playwright/.auth/user.json";
 
@@ -8,15 +9,15 @@ const authFile = "playwright/.auth/user.json";
  * Deletes the auth file so next session gets a fresh user
  */
 async function globalTeardown() {
-    console.log("\n🧹 Running global teardown...");
+    logger.log("info", "🧹 Running global teardown...");
     const authPath = path.resolve(authFile);
 
     if (fs.existsSync(authPath)) {
         fs.unlinkSync(authPath);
-        console.log(`✅ Deleted auth file: ${authFile}`);
-        console.log("   Next session will create a fresh user\n");
+        logger.log("info", `✅ Deleted auth file: ${authFile}`);
+        logger.log("info", "   Next session will create a fresh user\n");
     } else {
-        console.log(`⚠️  Auth file not found at ${authFile}\n`);
+        logger.log("warn", `Auth file not found at ${authFile}\n`);
     }
 }
 
