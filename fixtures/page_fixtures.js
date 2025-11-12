@@ -7,8 +7,10 @@ import HomePage from "../pages/home.page";
 import HeaderComponent from "../page-components/header.component";
 import FiltersComponent from "../page-components/filters.component";
 import UserAPI from "../util/api/user";
+import a11yFixtures from "./a11y_fixtures";
 
 export const test = base.extend({
+    ...a11yFixtures,
     loginPage: async ({ page }, use) => {
         const loginPage = new LoginPage(page);
         await use(loginPage);

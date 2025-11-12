@@ -8,11 +8,11 @@
         "docker:shell": "docker run --rm -it playwright-tests /bin/bash"
     },
     "devDependencies": {
+        "@axe-core/playwright": "^4.11.0",
         "@faker-js/faker": "^10.1.0",
         "@modelcontextprotocol/sdk": "^1.20.2",
         "@playwright/test": "^1.56.1",
         "@slack/webhook": "^7.0.6",
-        "axe-playwright": "^2.2.2",
         "axios": "^1.13.0",
         "colors": "^1.4.0",
         "dotenv": "^17.2.3",
