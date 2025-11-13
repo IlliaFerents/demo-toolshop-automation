@@ -16,6 +16,8 @@ class LoginPage {
         this.loginButton = page.getByTestId("login-submit");
         this.registerAccountLink = page.getByTestId("register-link");
         this.forgotPasswordLink = page.getByTestId("forgot-password-link");
+        this.totpCodeInput = page.locator('[data-test="totp-code"]');
+        this.verifyTotpButton = page.locator('[data-test="verify-totp"]');
     }
 
     /**
@@ -42,6 +44,23 @@ class LoginPage {
      */
     async clickLogin() {
         await this.loginButton.click();
+    }
+
+    /**
+     * Verifies that TOTP input fields are visible (2FA is required)
+     */
+    async verifyTOTPInputVisible() {
+        await expect(this.totpCodeInput).toBeVisible();
+        await expect(this.verifyTotpButton).toBeVisible();
+    }
+
+    /**
+     * Enters TOTP code and submits
+     * @param {string} totpCode - The 6-digit TOTP code
+     */
+    async enterTOTPCode(totpCode) {
+        await this.totpCodeInput.fill(totpCode);
+        await this.verifyTotpButton.click();
     }
 }
 
