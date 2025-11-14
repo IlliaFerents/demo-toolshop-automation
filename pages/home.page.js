@@ -22,6 +22,7 @@ class HomePage {
      */
     async goToHomePage() {
         await this.page.goto("/");
+        await this.productName.first().waitFor({ state: "visible" });
     }
 
     /**
