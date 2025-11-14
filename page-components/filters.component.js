@@ -36,7 +36,11 @@ class FiltersComponent {
         }
 
         const sortValue = `${criteria},${order}`;
+        const responsePromise = this.page.waitForResponse(
+            (response) => response.url().includes("/products") && response.url().includes(`sort=${sortValue}`)
+        );
         await this.sortDropdown.selectOption(sortValue);
+        await responsePromise;
     }
 
     /**
@@ -74,16 +78,30 @@ class FiltersComponent {
      * @param {string} query - The search query to submit
      */
     async submitSearch(query) {
+        const encodedQuery = encodeURIComponent(query);
+        const responsePromise = this.page.waitForResponse(
+            (response) => response.url().includes("/products/search") && response.url().includes(`q=${encodedQuery}`)
+        );
         await this.searchInput.fill(query);
         await this.searchSubmitButton.click();
+        await responsePromise;
     }
 
     /**
-     * Selects a category by its visible text
+     * Selects a category by its visible text and waits for API response
      * @param {string} category - The visible text of the category to select
+     * @returns {Promise<Response>} The API response containing filtered products
      */
     async selectCategory(category) {
-        await this.categoryCheckbox.filter({ hasText: category }).check();
+        const categoryLabel = this.page.locator("label").filter({ hasText: category });
+        const categoryCheckbox = categoryLabel.locator(this.categoryCheckbox);
+        await categoryCheckbox.waitFor({ state: "visible" });
+
+        const responsePromise = this.page.waitForResponse(
+            (response) => response.url().includes("/products") && response.url().includes("by_category=")
+        );
+        await categoryCheckbox.check();
+        return await responsePromise;
     }
 
     /**
@@ -99,7 +117,13 @@ class FiltersComponent {
      * @param {boolean} enable - True to enable, false to disable
      */
     async toggleEcoFriendly(enable) {
+        const responsePromise = this.page.waitForResponse(
+            (response) =>
+                response.url().includes("/products") &&
+                (enable ? response.url().includes("eco_friendly=true") : !response.url().includes("eco_friendly=true"))
+        );
         await this.ecoFriendlyCheckbox.setChecked(enable);
+        await responsePromise;
     }
 }
 
