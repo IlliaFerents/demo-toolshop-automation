@@ -16,6 +16,9 @@ test.describe("Two-Factor Authentication (2FA)", { tag: ["@login", "@2fa"] }, ()
         await userAPI.register(userData);
     });
 
+    /**
+     * @testrail 16
+     */
     test("should successfully setup and enable 2FA", async ({ homePage, userAPI, twoFactorAPI }) => {
         const loginResponse = await userAPI.login(userEmail, userPassword);
         expect(loginResponse.access_token).toBeTruthy();
@@ -35,6 +38,9 @@ test.describe("Two-Factor Authentication (2FA)", { tag: ["@login", "@2fa"] }, ()
         expect(verifyResponse.message).toBe("TOTP enabled successfully");
     });
 
+    /**
+     * @testrail 17
+     */
     test("should require TOTP code when logging in after 2FA is enabled", async ({
         homePage,
         loginPage,
@@ -59,6 +65,9 @@ test.describe("Two-Factor Authentication (2FA)", { tag: ["@login", "@2fa"] }, ()
         await loginPage.verifyTOTPInputVisible();
     });
 
+    /**
+     * @testrail 18
+     */
     test("should successfully login with correct TOTP code", async ({ homePage, loginPage, userAPI, twoFactorAPI }) => {
         const loginResponse = await userAPI.login(userEmail, userPassword);
         await homePage.goToHomePage();
