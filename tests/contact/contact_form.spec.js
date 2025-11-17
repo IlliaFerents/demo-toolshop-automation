@@ -1,5 +1,5 @@
-import { test, expect } from "../fixtures/page_fixtures";
-import * as randomData from "../util/random_data_generator/user";
+import { test, expect } from "../../fixtures/page_fixtures";
+import * as randomData from "../../util/random_data_generator/user";
 import * as path from "path";
 
 test.describe("Contact Form", { tag: "@contact_form" }, () => {

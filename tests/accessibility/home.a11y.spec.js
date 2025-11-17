@@ -1,5 +1,5 @@
 import { test, expect } from "../../fixtures/page_fixtures";
-import { URLS } from "../../util/constants/urls.js";
+import { URLS } from "../../util/constants/urls";
 
 test.describe("Home Page Accessibility", { tag: "@a11y" }, () => {
     /**

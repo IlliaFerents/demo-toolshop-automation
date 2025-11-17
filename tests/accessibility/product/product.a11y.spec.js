@@ -1,4 +1,4 @@
-import { test } from "../../fixtures/page_fixtures";
+import { test } from "../../../fixtures/page_fixtures";
 
 test.describe("Product Page Accessibility", { tag: "@a11y" }, () => {
     /**

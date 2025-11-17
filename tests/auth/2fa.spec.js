@@ -1,6 +1,6 @@
-import { test, expect } from "../fixtures/page_fixtures";
-import { generateTOTPCode } from "../util/api/totp.js";
-import { generateUserSignUpData } from "../util/random_data_generator/user.js";
+import { test, expect } from "../../fixtures/page_fixtures";
+import { generateTOTPCode } from "../../util/api/totp.js";
+import { generateUserSignUpData } from "../../util/random_data_generator/user.js";
 
 test.describe("Two-Factor Authentication (2FA)", { tag: ["@login", "@2fa"] }, () => {
     test.use({ storageState: { cookies: [], origins: [] } });

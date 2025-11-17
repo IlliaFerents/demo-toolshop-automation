@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/page_fixtures.js";
+import { test, expect } from "../../fixtures/page_fixtures.js";
 
 test.describe("Product Sorting", { tag: ["@product", "@sorting", "@filters"] }, () => {
     test.beforeEach(async ({ homePage }) => {

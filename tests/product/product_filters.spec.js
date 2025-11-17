@@ -1,6 +1,6 @@
-import { test, expect } from "../fixtures/page_fixtures.js";
-import { getAllSubCategories } from "../util/constants/categories.js";
-import { getRandomArrayElement } from "../util/random_data_generator/user.js";
+import { test, expect } from "../../fixtures/page_fixtures.js";
+import { getAllSubCategories } from "../../util/constants/categories.js";
+import { getRandomArrayElement } from "../../util/random_data_generator/user.js";
 
 test.describe("Product Filters", { tag: ["@product", "@filters"] }, () => {
     test.beforeEach(async ({ homePage }) => {

@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/page_fixtures";
+import { test, expect } from "../../fixtures/page_fixtures";
 
 test.describe("Product", { tag: ["@product", "@logged_out"] }, () => {
     test.use({ storageState: { cookies: [], origins: [] } });
