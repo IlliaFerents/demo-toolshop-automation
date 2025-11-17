@@ -2,6 +2,7 @@ import { test, expect } from "../../fixtures/page_fixtures";
 import * as randomData from "../../util/random_data_generator/user";
 
 test.describe("Login", { tag: "@login" }, () => {
+    test.use({ storageState: { cookies: [], origins: [] } });
     let userData;
 
     test.beforeEach(async ({ loginPage, userAPI }) => {

@@ -2,6 +2,7 @@ import { test, expect } from "../../fixtures/page_fixtures";
 import * as randomData from "../../util/random_data_generator/user";
 
 test.describe("Registration", { tag: "@registration" }, () => {
+    test.use({ storageState: { cookies: [], origins: [] } });
     test.beforeEach(async ({ loginPage }) => {
         await loginPage.goToLogin();
         await loginPage.registerAccountLink.click();
