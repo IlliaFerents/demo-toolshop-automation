@@ -4,6 +4,7 @@ import RegistrationPage from "../pages/register.page";
 import ContactPage from "../pages/contact.page";
 import ProductPage from "../pages/product.page";
 import HomePage from "../pages/home.page";
+import CheckoutPage from "../pages/checkout.page";
 import HeaderComponent from "../page-components/header.component";
 import FiltersComponent from "../page-components/filters.component";
 import UserAPI from "../util/api/user";
@@ -31,6 +32,10 @@ export const test = base.extend({
     homePage: async ({ page }, use) => {
         const homePage = new HomePage(page);
         await use(homePage);
+    },
+    checkoutPage: async ({ page }, use) => {
+        const checkoutPage = new CheckoutPage(page);
+        await use(checkoutPage);
     },
     headerComponent: async ({ page }, use) => {
         const headerComponent = new HeaderComponent(page);
