@@ -68,3 +68,31 @@ export function getRandomArrayElement(arr) {
     }
     return faker.helpers.arrayElement(arr);
 }
+
+/**
+ * Generates random credit card details matching application validation rules
+ * @returns {Object} Credit card details object
+ * @returns {string} cardNumber - Credit card number in format 0000-0000-0000-0000 (16 digits with hyphens)
+ * @returns {string} expirationDate - Expiration date in format MM/YYYY
+ * @returns {string} cvv - 3-digit CVV code
+ * @returns {string} cardHolderName - Card holder's full name in uppercase
+ */
+export function generateCardDetails() {
+    const cardNumber = faker.finance.creditCardNumber({ issuer: "####-####-####-####" });
+
+    const month = faker.number.int({ min: 1, max: 12 }).toString().padStart(2, "0");
+    const currentYear = new Date().getFullYear();
+    const futureYear = faker.number.int({ min: currentYear + 1, max: currentYear + 5 });
+    const expirationDate = `${month}/${futureYear}`;
+
+    const cvv = faker.finance.creditCardCVV();
+
+    const cardHolderName = faker.person.fullName().toUpperCase();
+
+    return {
+        cardNumber,
+        expirationDate,
+        cvv,
+        cardHolderName
+    };
+}
